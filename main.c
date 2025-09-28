@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 typedef struct node{
 	char *task;
@@ -17,7 +18,7 @@ void print_list(nt *head){
 
 void add_task(nt *head, char *val){
 	if(head->task==NULL){
-		head->task = val;
+		head->task = strdup(val);
 		head->next = NULL;
 	} else {
 		nt *current = head;
@@ -26,7 +27,7 @@ void add_task(nt *head, char *val){
 		}
 
 		current->next = malloc(sizeof(nt));
-		current->next->task = val;
+		current->next->task = strdup(val);
 		current->next->next = NULL;
 	}
 	
@@ -49,13 +50,16 @@ char* pop(nt **head){
 }
 
 char* delete_task(nt **head, int n){
+	assert(head!=NULL);
+	assert(n>=0);
+
 	int i = 0;
 	char* retval = NULL;
 	nt *current = *head;
 	nt *temp_node = NULL;
 
 	if (n == 0){
-		pop(head);
+		return pop(head);
 	}
 
 	for (i=0;i<n-1;i++){
@@ -70,7 +74,7 @@ char* delete_task(nt **head, int n){
 	}
 
 	temp_node = current->next;
-	retval = current->task;
+	retval = temp_node->task;
 	current->next = temp_node->next;
 	free(temp_node);
 	return retval;
@@ -79,38 +83,41 @@ char* delete_task(nt **head, int n){
 int main(){
 	nt *head = NULL;
 	head = malloc(sizeof(nt));
-	head->task = "Create a new list";
-	head->next = malloc(sizeof(nt));
-	head->next->task = "Create an item";
-	head->next->next = NULL;
-	
-	int option;
+	head->task = NULL;
+	head->next = NULL;
 
-	printf("Please select an option:\n");
-	printf("1: Add a task\n");
-	printf("2: Delete a task\n");
+	int option = 0;
 
-	scanf("%d", &option);
+	while (option!= 6){
+		printf("Please select an option:\n");
+		printf("1: Add a task\n");
+		printf("2: Delete a task\n");
+		printf("6: Leave the application\n");
 
-	while(getchar() != '\n') {}
+		scanf("%d", &option);
 
-	if(option == 1){
-		printf("Enter a task: ");
-		char val[20];
-		fgets(val, 20, stdin);
-		val[strcspn(val,"\n")] = '\0';
-		add_task(head, val);
-	} else if (option == 2){
-		print_list(head);
-		printf("Enter the index to delete: ");
-		int index;
-		scanf("%d", &index);
 		while(getchar() != '\n') {}
 
-		printf("You have deleted the task: \n");
-		delete_task(&head, index);
-	}
+		if(option == 1){
+			printf("Enter a task: ");
+			char val[20];
+			fgets(val, 20, stdin);
+			val[strcspn(val,"\n")] = '\0';
+			add_task(head, val);
+		} else if (option == 2){
+			print_list(head);
+			printf("Enter the index to delete: ");
+			int index;
+			scanf("%d", &index);
+			index -= 1;
+			while(getchar() != '\n') {}
+
+			printf("You have deleted the task: \n");
+			delete_task(&head, index);
+		}
 	
-	print_list(head);
+	}
+
+	return 0;
 	
 }

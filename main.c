@@ -5,20 +5,48 @@
 
 typedef struct node{
 	char *task;
+	int number;	// added an int which will act as an ID
 	struct node *next;
 } nt;
 
 void print_list(nt *head){
 	nt *current = head;
 	while(current!=NULL){
-		printf("%s\n", current->task);
+		printf("%d: %s\n", current->number, current->task);	// added the number to print out
 		current = current->next;
+	}
+}
+
+/*
+Added a new function called get_number() this will increment each item in the list 
+and return the number for the new item
+*/
+
+int get_number(nt *head){
+	int i = 0;
+	nt *current = head;
+	while(current!=NULL){
+		i++;
+		current = current->next;
+	}
+
+	return i;
+}
+
+void after_delete(nt *head){
+	nt *current = head;
+	int i = 1;
+	while(current!=NULL){
+		current->number = i;
+		current = current->next;
+		i++;
 	}
 }
 
 void add_task(nt *head, char *val){
 	if(head->task==NULL){
 		head->task = strdup(val);
+		head->number = get_number(head); // This calls the get_number() function
 		head->next = NULL;
 	} else {
 		nt *current = head;
@@ -28,6 +56,7 @@ void add_task(nt *head, char *val){
 
 		current->next = malloc(sizeof(nt));
 		current->next->task = strdup(val);
+		current->next->number = get_number(head); // Call the function again
 		current->next->next = NULL;
 	}
 	
@@ -84,6 +113,7 @@ int main(){
 	nt *head = NULL;
 	head = malloc(sizeof(nt));
 	head->task = NULL;
+	head->number = 0;
 	head->next = NULL;
 
 	int option = 0;
@@ -114,6 +144,7 @@ int main(){
 
 			printf("You have deleted the task: \n");
 			delete_task(&head, index);
+			after_delete(head);
 		}
 	
 	}

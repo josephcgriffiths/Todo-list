@@ -11,3 +11,5 @@ b) I can implement those functions
 Something I have wanted to do in this project is to place asserts everywhere as a means of avoiding errors/understanding where I have gone wrong.
 
 So far with my limited experience I have run into seg faults on numerous occasions and have spent more time debugging. I have seen online that asserts may help me when debugging.
+
+In the last commit I was glad I managed to add a new field to the struct for tasks. This saw me adding a number, along with functions that manage the numbers as a task is deleted.

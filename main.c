@@ -1,26 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <assert.h>
 
 typedef struct node{
 	char *task;
-	int number;	// added an int which will act as an ID
+	int number;	
+	bool status;
 	struct node *next;
 } nt;
 
 void print_list(nt *head){
 	nt *current = head;
+
+	printf("| ID | Task | Status |\n");
 	while(current!=NULL){
-		printf("%d: %s\n", current->number, current->task);	// added the number to print out
+		printf("|%d  | %s | %d |\n", current->number, current->task, current->status);	
+		printf("------------------\n");
 		current = current->next;
 	}
 }
-
-/*
-Added a new function called get_number() this will increment each item in the list 
-and return the number for the new item
-*/
 
 int get_number(nt *head){
 	int i = 0;
@@ -46,7 +46,8 @@ void after_delete(nt *head){
 void add_task(nt *head, char *val){
 	if(head->task==NULL){
 		head->task = strdup(val);
-		head->number = get_number(head); // This calls the get_number() function
+		head->number = get_number(head); 
+		head->status = false;
 		head->next = NULL;
 	} else {
 		nt *current = head;
@@ -56,7 +57,8 @@ void add_task(nt *head, char *val){
 
 		current->next = malloc(sizeof(nt));
 		current->next->task = strdup(val);
-		current->next->number = get_number(head); // Call the function again
+		current->next->number = get_number(head); 
+		current->next->status = false;
 		current->next->next = NULL;
 	}
 	
@@ -109,6 +111,15 @@ char* delete_task(nt **head, int n){
 	return retval;
 }
 
+void changeStatus(nt *head, int task){
+	nt *current = head;
+	while(current->number!= task){
+		current = current->next;
+	}
+
+	current->status = true;
+}
+
 int main(){
 	nt *head = NULL;
 	head = malloc(sizeof(nt));
@@ -122,6 +133,8 @@ int main(){
 		printf("Please select an option:\n");
 		printf("1: Add a task\n");
 		printf("2: Delete a task\n");
+		printf("3: Print Tasks\n");
+		printf("4: Update Task Status\n");
 		printf("6: Leave the application\n");
 
 		scanf("%d", &option);
@@ -144,7 +157,16 @@ int main(){
 
 			printf("You have deleted the task: \n");
 			delete_task(&head, index);
-			after_delete(head);
+			after_delete(head);	
+		} else if (option == 3){
+			print_list(head);
+		} else if (option == 4) {
+			printf("What task would you like to update?\n");
+			print_list(head);
+			int task;
+			scanf("%d", &task);
+			while(getchar() != '\n') {}
+			changeStatus(head, task);
 		}
 	
 	}

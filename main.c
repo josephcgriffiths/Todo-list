@@ -13,11 +13,12 @@ typedef struct node{
 
 void print_list(nt *head){
 	nt *current = head;
-
-	printf("| ID | Task | Status |\n");
+	printf("+----+------------------------------+--------+\n");
+	printf("| ID | Task                         | Status |\n");
+	printf("+----+------------------------------+--------+\n");
 	while(current!=NULL){
-		printf("|%d  | %s | %d |\n", current->number, current->task, current->status);	
-		printf("------------------\n");
+		printf("| %-2d | %-28s |  %c     |\n", current->number, current->task, current->status ? 'X' : ' ');	
+		printf("+----+------------------------------+--------+\n");
 		current = current->next;
 	}
 }
@@ -143,8 +144,8 @@ int main(){
 
 		if(option == 1){
 			printf("Enter a task: ");
-			char val[20];
-			fgets(val, 20, stdin);
+			char val[30];
+			fgets(val, 30, stdin);
 			val[strcspn(val,"\n")] = '\0';
 			add_task(head, val);
 		} else if (option == 2){

@@ -121,6 +121,69 @@ void changeStatus(nt *head, int task){
 	current->status = true;
 }
 
+void saveToFile(nt *head){
+	FILE *fptr;
+	
+	fptr = fopen("main.txt", "w");
+	
+	for(nt *current = head; current; current = current->next){
+		fprintf(fptr, "%d\t%s\t%d\n", current->number, current->task, current->status);
+	}
+	fclose(fptr);
+}
+
+void freeHead(nt *head){
+	while(head){
+		nt *next = head->next;
+		free(head->task);
+		free(head);
+		head = next;
+	}
+}
+
+void reloadData(nt **head, int id, const char *task, bool status){
+	nt *node = malloc(sizeof(nt));
+
+	node->number = id;
+	node->task = strdup(task);
+	node->status = status;
+	node->next = NULL;
+
+	if(*head == NULL){
+		*head = node;
+		return;
+	}
+
+	nt *current = *head;
+	while(current->next){
+		current = current->next;
+	}
+
+	current->next = node;
+}
+
+void loadFiles(nt **head){
+	FILE *fptr;
+
+	fptr = fopen("main.txt", "r");
+
+	freeHead(*head);
+	*head = NULL;
+	
+	char line[2048];
+	while(fgets(line, sizeof line, fptr)){
+		int id = 0, status = 0;
+		char task_buf[2000];
+
+		sscanf(line, "%d\t%1999[^\t]\t%d", &id, task_buf, &status);
+		reloadData(head, id, task_buf, status);
+
+	}
+
+	fclose(fptr);
+
+}
+
 int main(){
 	nt *head = NULL;
 	head = malloc(sizeof(nt));
@@ -130,17 +193,30 @@ int main(){
 
 	int option = 0;
 
-	while (option!= 6){
-		printf("Please select an option:\n");
-		printf("1: Add a task\n");
-		printf("2: Delete a task\n");
-		printf("3: Print Tasks\n");
-		printf("4: Update Task Status\n");
-		printf("6: Leave the application\n");
-
+	while (option!= 7){
+		printf("+-----------------------------+\n");
+		printf("|Please select an option:     |\n");
+		printf("+-----------------------------+\n");	
+		printf("| 1 | Add a task              |\n");
+		printf("+---+-------------------------+\n");
+		printf("| 2 | Delete a task           |\n");
+		printf("+---+-------------------------+\n");
+		printf("| 3 | Print Tasks             |\n");
+		printf("+---+-------------------------+\n");
+		printf("| 4 | Update Task Status      |\n");
+		printf("+---+-------------------------+\n");
+		printf("| 5 | Save your Tasks         |\n");
+		printf("+---+-------------------------+\n");
+		printf("| 6 | Reload your Tasks       |\n");
+		printf("+---+-------------------------+\n");
+		printf("| 7 | Leave the Application   |\n");
+		printf("+---+-------------------------+\n");
 		scanf("%d", &option);
 
 		while(getchar() != '\n') {}
+		
+		// Moves position to 1,1 and clears the screen
+		printf("\e[1;1H\e[2J");
 
 		if(option == 1){
 			printf("Enter a task: ");
@@ -168,6 +244,10 @@ int main(){
 			scanf("%d", &task);
 			while(getchar() != '\n') {}
 			changeStatus(head, task);
+		} else if (option == 5){
+			saveToFile(head);
+		} else if (option == 6){
+			loadFiles(&head);
 		}
 	
 	}

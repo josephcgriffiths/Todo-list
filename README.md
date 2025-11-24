@@ -6,7 +6,7 @@ I think this is a fun / somewhat challenging project that has significantly impr
 It's no where near complete and I'm working on it day-by-day when I have the chance. So far, I have created the node struct, allowed the user to add a task, and delete a task through specifying the index.
 
 # Goals for this Small Application
-I would like to make the user-experince more fluid, but that is not on the list of priorities for this project. I just want to make sure:
+I would like to make the user-experiance more fluid, but that is not on the list of priorities for this project. I just want to make sure:
 a) I understand the functionality that goes into a todo list
 b) I can implement those functions
 
